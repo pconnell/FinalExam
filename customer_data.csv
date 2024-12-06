@@ -1,0 +1,109 @@
+﻿orders_per_week,total_order_dollars,past_orders,needs_cc
+,,"[
+['candy bar','chocolate','coffee'],
+['laptop','mouse','headphones','pens','notepad'],
+['potato chips','drink mix','power cable']
+]",
+,,"[
+['backpack','hiking poles','fishing rod','cooler'],
+['chocolate','coffee','potato chips','drink mix'],
+['printer','printer paper','notepad','pens'],
+['t-shirt','shorts','sandals']
+]",
+,,"[
+['formal shoes','dress','chocolate','coffee','jellybeans'],
+['bed','bed sheets','chips','drink mix'],
+['coffee table','rug','chocolate','coffee']
+]",
+,,"[
+['printer paper','printer','stapler','coffee','chocolate'],
+['coffee table','rug','recliner'],
+['dog treats','beef jerky']
+]",
+,,"[
+['pens','notepad','dog treats'],
+['printer','printer paper','power cable']
+]",
+,,"[
+['laptop','mouse','printer paper','printer','pencils','notepad'],
+['coffee table','recliner','power cable']
+]",
+,,"[
+['coffee','chocolate'],
+['rug','recliner'],
+['laptop','power cable','printer']
+]",
+,,"[
+['pens','notepad', 'power cable']
+]",
+,,"[
+['headphones','power cable'],
+['potato chips','drink mix', 't-shirt','shorts','sandals','dog treats']
+]",
+,,"[
+['router','laptop','printer','printer paper','mouse','power cable','headphones'],
+['coffee','chocolate']
+]",
+,,"[
+['pencils','notepad'],
+['rug','recliner']
+]",
+,,"[
+['coffee','chocolate','coffee table','rug']]",
+,,"[
+['t-shirt','shorts','sandals','beef jerky','dog treats']
+]",
+,,"[
+['athletic shoes','shorts','socks']]",
+,,"[
+['potato chips','drink mix'],
+['dress','sandals']
+]",
+,,"[
+['pencils','pens','printer paper','notepad']
+]",
+,,"[
+['coffee','chocolate'],
+['power cable','headphones','mouse','laptop']
+]",
+,,"[
+['t-shirt','shorts','sandals']
+]",
+,,"[
+['coffee table','rug'],
+['dog treats','fishing rod','cooler']
+]",
+,,"[
+['pencils','pens','notepad'],
+['athletic shoes','shorts','socks']
+]",
+,,"[
+['cooler','fishing rod','dog treats'],
+['coffee','chocolate'],
+['potato chips','drink mix']
+]",
+,,"[
+['dress','sandals']
+]",
+,,"[
+['coffee','potato chips','jellybeans']
+]",
+,,"[
+['athletic shoes','socks','shorts']
+]",
+,,"[
+['athletic shoes','socks','shorts','cooler','fishing rod','dog treats']
+]",
+,,"[
+['coffee','chocolate']
+]",
+,,"[
+['laptop','notepad','pens','pencils','power cable','printer','printer paper'],
+['dress','sandals','jellybeans']
+]",
+,,"[
+['recliner','coffee table','rug','coffee','chocolate']
+]",
+,,"[
+['coffee','chocolate','socks','notepad']
+]",

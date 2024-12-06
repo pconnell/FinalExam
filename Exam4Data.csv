@@ -1,0 +1,30 @@
+total_order_dollars,past_orders,needs_cc,num_orders
+1166.5506654493101,"[['candy bar', 'chocolate', 'coffee'], ['laptop', 'mouse', 'headphones', 'pens', 'notepad'], ['potato chips', 'drink mix', 'power cable']]",False,3
+785.5341047364345,"[['backpack', 'hiking poles', 'fishing rod', 'cooler'], ['chocolate', 'coffee', 'potato chips', 'drink mix'], ['printer', 'printer paper', 'notepad', 'pens'], ['t-shirt', 'shorts', 'sandals']]",False,4
+2437.854049504835,"[['formal shoes', 'dress', 'chocolate', 'coffee', 'jellybeans'], ['bed', 'bed sheets', 'chips', 'drink mix'], ['coffee table', 'rug', 'chocolate', 'coffee']]",True,3
+2102.646329250872,"[['printer paper', 'printer', 'stapler', 'coffee', 'chocolate'], ['coffee table', 'rug', 'recliner'], ['dog treats', 'beef jerky']]",False,3
+395.3493573464377,"[['pens', 'notepad', 'dog treats'], ['printer', 'printer paper', 'power cable']]",False,2
+2871.0961971076554,"[['laptop', 'mouse', 'printer paper', 'printer', 'pencils', 'notepad'], ['coffee table', 'recliner', 'power cable']]",True,2
+2949.240125097365,"[['coffee', 'chocolate'], ['rug', 'recliner'], ['laptop', 'power cable', 'printer']]",True,3
+23.810467262450864,"[['pens', 'notepad', 'power cable']]",False,1
+136.63271241584658,"[['headphones', 'power cable'], ['potato chips', 'drink mix', 't-shirt', 'shorts', 'sandals', 'dog treats']]",False,2
+1715.0348882546218,"[['router', 'laptop', 'printer', 'printer paper', 'mouse', 'power cable', 'headphones'], ['coffee', 'chocolate']]",True,2
+1548.782240501769,"[['pencils', 'notepad'], ['rug', 'recliner']]",False,2
+398.10916502877916,"[['coffee', 'chocolate', 'coffee table', 'rug']]",False,1
+78.43627312274802,"[['t-shirt', 'shorts', 'sandals', 'beef jerky', 'dog treats']]",False,1
+111.51405090562507,"[['athletic shoes', 'shorts', 'socks']]",False,1
+79.80410409183588,"[['potato chips', 'drink mix'], ['dress', 'sandals']]",False,2
+19.652670629006977,"[['pencils', 'pens', 'printer paper', 'notepad']]",False,1
+1144.2717558922598,"[['coffee', 'chocolate'], ['power cable', 'headphones', 'mouse', 'laptop']]",False,2
+46.38381678671957,"[['t-shirt', 'shorts', 'sandals']]",False,1
+637.7238920916559,"[['coffee table', 'rug'], ['dog treats', 'fishing rod', 'cooler']]",False,2
+121.20007542707037,"[['pencils', 'pens', 'notepad'], ['athletic shoes', 'shorts', 'socks']]",False,2
+295.19783232677196,"[['cooler', 'fishing rod', 'dog treats'], ['coffee', 'chocolate'], ['potato chips', 'drink mix']]",False,3
+68.17258013677309,"[['dress', 'sandals']]",False,1
+24.805922888542582,"[['coffee', 'potato chips', 'jellybeans']]",False,1
+111.51405090562507,"[['athletic shoes', 'socks', 'shorts']]",False,1
+373.10456862291807,"[['athletic shoes', 'socks', 'shorts', 'cooler', 'fishing rod', 'dog treats']]",False,1
+21.9757906544162,"[['coffee', 'chocolate']]",False,1
+1474.9755285835563,"[['laptop', 'notepad', 'pens', 'pencils', 'power cable', 'printer', 'printer paper'], ['dress', 'sandals', 'jellybeans']]",False,2
+1699.051075764288,"[['recliner', 'coffee table', 'rug', 'coffee', 'chocolate']]",True,1
+36.10025275939322,"[['coffee', 'chocolate', 'socks', 'notepad']]",False,1

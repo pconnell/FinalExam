@@ -1,0 +1,408 @@
+# Question 4 - The Problem 
+
+* Suppose you work for Amazon and they have asked you to (1) determine if a User should get a credit card (yes or no), and (2) determine which products to advertise to the User. 
+
+* Imagine that you have any/all of Amazon’s User data – anything you need. 
+
+(a)	Design/create a small dataset that you can use to address the questions above. Paste it here. Keep it small with 3 – 4 columns and 25 – 30 rows. You decide the column/variable names and what the data would look like. It can be anything you want that also makes sense with respect to the question. You create the dataset you need.
+
+(b)	Next, describe, illustrate, and perform (in Python or R) whatever you think you need to do so that you can address the questions asked properly. 
+The reason why you are not being told what tools/methods/models to use is because on the job – you are the data scientist and you determine what to use, what to do, what the results mean, and how to present it. Please do that here.
+
+* Discuss and illustrate your technical results and non-technical conclusions. YOU decide what is needed to do this.
+
+## Data Creation / Generation
+
+```{python}
+from sklearn.preprocessing import (
+    OneHotEncoder, OrdinalEncoder,
+)
+
+from sklearn.naive_bayes import BernoulliNB
+
+from sklearn.model_selection import train_test_split
+
+import pandas as pd, numpy as np
+import json, matplotlib.pyplot as plt, seaborn as sns
+```
+
+```{python}
+cust = pd.read_csv('customer_data.csv')
+cust.head()
+for i, row in cust.iterrows():
+    cust.at[i,'past_orders'] = json.loads(row['past_orders'].replace("'",'\"'))
+    cust.loc[i,'total_order_dollars'] = 0
+cust.head()
+```
+
+
+```{python}
+#| output: false
+trans = []
+f = open('./transaction_data.csv','w')
+order_count = 0
+for i, row in cust.iterrows():
+    for order in row['past_orders']:
+        order_count+=1
+        for item in order:
+            s = "{},{}\n".format(order_count,item) #str(order_count)+','.join(item)+'\n'
+            f.write(s)
+f.close()
+```
+
+
+```{python}
+data = pd.DataFrame({
+    'label':[],
+    'num_purchases':[],
+    'total_purchase_value':[],
+    'item_categories':[],
+    'transactions':[],
+    #'num_purchased_items':[]
+})
+
+items = {
+    'electronics':['computer','mouse','keyboard','headphones','watch','router','power cable','printer'],
+    'office_supplies':['stapler','printer paper','pens','pencils','highlighter','notepad'],
+    'food':['chocolate','coffee','jellybeans','chips','drink mix','coffee creamer',],
+    'clothing':['dress','t-shirt','shorts','pants','socks','formal shoes','athletic shoes','sandals'],
+    'furniture':['bed','coffee table','rug','recliner'],
+    'outdoor':['backpack','hiking poles','fishing pole','folding chair','cooler']
+}
+
+np.random.seed(9001)
+
+
+item_cost_dict = {
+    'laptop': np.random.normal(1000,100),
+    'mouse': np.random.normal(35,4),
+    'keyboard': np.random.normal(57,12),
+    'headphones': np.random.normal(47,10),
+    'watch': np.random.normal(150,20),
+    'router': np.random.normal(200,17),
+    'power cable': np.random.normal(15,2),
+    'printer': np.random.normal(300,75),
+    'stapler': np.random.normal(15,1),
+    'printer paper': np.random.normal(10,1),
+    'pens': np.random.normal(5,.5),
+    'pencils': np.random.normal(3,.25),
+    'highlighter': np.random.normal(6,.63),
+    'notepad': np.random.normal(2.5,.25),
+    'chocolate': np.random.normal(8,2),
+    'coffee': np.random.normal(12,1.73),
+    'jellybeans': np.random.normal(3.3,.83),
+    'chips': np.random.normal(6,.37),
+    'drink mix': np.random.normal(3.8,.19),
+    'coffee creamer': np.random.normal(6.7,0.57),
+    'dress': np.random.normal(50,0.329),
+    't-shirt': np.random.normal(13.27,2.05),
+    'shorts': np.random.normal(20.99,2.28),
+    'pants': np.random.normal(27.99,3.4),
+    'socks': np.random.normal(11.99,1.03),
+    'formal shoes': np.random.normal(64.25,12),
+    'athletic shoes': np.random.normal(84.99,7.25),
+    'sandals': np.random.normal(15.99,1.99),
+    'bed': np.random.normal(1500,175.25),
+    'coffee table': np.random.normal(150,16.97),
+    'rug': np.random.normal(227,22),
+    'recliner': np.random.normal(1299.99,93),
+    'backpack': np.random.normal(38,3),
+    'hiking poles': np.random.normal(55,2.99),
+    'fishing rod': np.random.normal(175.99,8.25),
+    'folding chair': np.random.normal(42,10),
+    'cooler': np.random.normal(75,8),
+    'beef jerky':np.random.normal(17.50,2.5),
+    'candy bar':np.random.normal(3.42,0.17),
+    'potato chips':np.random.normal(6.83,1.1),
+    'bed sheets':np.random.normal(27.95,3.33),
+    'dog treats':np.random.normal(18.43,2.25)
+}
+cust['num_orders'] = 0
+for i, row in cust.iterrows():
+    cust.loc[i,'num_orders'] =len(row['past_orders'])
+    for order in row['past_orders']:
+        for item in order:
+            price = item_cost_dict[item]
+            cust.loc[i,'total_order_dollars'] = cust.loc[i,'total_order_dollars'] + price
+cust['avg_order_amt'] = cust['total_order_dollars'] / cust['num_orders']
+cust['needs_cc'] = np.select([cust['avg_order_amt'] > 785.53],[True],default=False)
+cust.drop(columns=['orders_per_week','avg_order_amt'],inplace=True)
+cust.to_csv('./Exam4Data.csv',index=False)
+```
+
+## Data Visualization
+
+```{python}
+cust['avg_order_amt'] = cust['total_order_dollars']/cust['num_orders']
+fig,ax = plt.subplots(nrows=1,ncols=2)
+sns.histplot(data=cust,x='avg_order_amt',binwidth=200,ax=ax[0])
+sns.kdeplot(data=cust,x='avg_order_amt',ax=ax[1])
+
+fig.suptitle("Distribution of average purchase amounts")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+cust['avg_order_amt'].describe()
+```
+
+People are spending money!  Most of our average purchasers fall under the $1000 water mark.  Going beyond $1000 can be costly.  The users who make larger purchases on average may be more viable customers to whom we could advertise credit.  Especially if they're buying more costly items in the electronics, furniture, or other departments.  The median purchase price of $785.43 highlights this as well, a bit more clearly than the histogram.
+
+Let's go ahead and say that those people do need credit cards.  I'll label the data accordingly and see if we can model of of it.
+
+```{python}
+cust['needs_cc'] = np.select([cust['avg_order_amt'] > 785.53],[True],default=False)
+cust
+```
+
+We may be able to build a naive bayes model off of this data, examining past orders, and seeing if a new order may necessitate the customer to get a credit card based on what they have in their cart.
+
+```{python}
+from sklearn.naive_bayes import MultinomialNB,CategoricalNB,BernoulliNB
+from sklearn.metrics import (
+    accuracy_score,roc_auc_score,
+    precision_score, recall_score, 
+    f1_score, confusion_matrix,
+    ConfusionMatrixDisplay
+)
+init_data = cust[['past_orders','needs_cc']]
+init_data
+```
+
+```{python}
+# get the data in format for Bernoulli Naive Bayes
+all_items = set()
+ords = []
+for i,row in init_data.iterrows():
+    # print(row)
+    for order in row['past_orders']:
+        d = {'needs_cc':row['needs_cc']}
+        for item in order:
+            all_items.add(item)
+            d[item] = 1
+        ords.append(d)
+all_items.add('needs_cc')
+fr = pd.DataFrame(ords,columns=list(all_items))
+fr.fillna(0,inplace=True)
+fr.head()
+```
+
+```{python}
+#separate the data from the labels
+labels = fr['needs_cc']
+fr.drop(columns='needs_cc',inplace=True)
+```
+
+```{python}
+#build a train-test-split, fit, predict
+
+bnb = BernoulliNB()
+
+X_train,X_test,y_train,y_test = train_test_split(
+    fr,
+    labels,
+    stratify=labels,
+    random_state=8808,
+    test_size=0.2
+)
+bnb.fit(X_train,y_train)
+
+y_pred = bnb.predict(X_test)
+results = pd.DataFrame({
+    'Model':[],
+    'Data':[],
+    'Accuracy':[],
+    'Precision':[],
+    'Recall':[],
+    'F1':[],
+    'ROC-AUC':[]
+})
+results.loc[len(results)] = {
+    'Model':'BernoulliNB',
+    'Accuracy':accuracy_score(y_test,y_pred),
+    'Precision':precision_score(y_test,y_pred),
+    'Recall':recall_score(y_test,y_pred),
+    'F1':f1_score(y_test,y_pred),
+    'ROC-AUC':roc_auc_score(y_test,y_pred)
+}
+```
+
+```{python}
+#| eval: true
+#| echo: false
+results.style.hide(axis='index')
+```
+
+```{python}
+ConfusionMatrixDisplay(
+    confusion_matrix(
+        y_pred=y_pred,y_true=y_test
+    )
+).plot()
+plt.title("Confusion Matrix - Bernoulli Naive Bayes for Credit Cards")
+plt.tight_layout()
+plt.show()
+```
+
+This is a very limited sample for training and testing data, so the model performs absurdly well on the limited information.  It has 100% performance for all metrics, and this could be a sign of overfitting from limited data.  It would be good to see if an oversampling of this data produces similar, or to gather more records from the actual customer database.
+
+```{python}
+#make copies of all source records so we have more with which to assess.
+oversamp = fr.copy()
+lab_2 = labels.copy()
+for i in range(10):
+    oversamp = pd.concat([oversamp,oversamp])
+    lab_2 = pd.concat([lab_2,lab_2])
+
+X_train,X_test,y_train,y_test = train_test_split(
+    oversamp,
+    lab_2,
+    stratify=lab_2,
+    random_state=8809,
+    test_size=0.2
+)
+
+bnb.fit(X_train,y_train)
+y_pred = bnb.predict(X_test)
+
+results = pd.DataFrame({
+    'Model':[],
+    'Data':[],
+    'Accuracy':[],
+    'Precision':[],
+    'Recall':[],
+    'F1':[],
+    'ROC-AUC':[]
+})
+results.loc[len(results)] = {
+    'Model':'BernoulliNB (No Tuning)',
+    'Data':'Oversampled',
+    'Accuracy':accuracy_score(y_test,y_pred),
+    'Precision':precision_score(y_test,y_pred),
+    'Recall':recall_score(y_test,y_pred),
+    'F1':f1_score(y_test,y_pred),
+    'ROC-AUC':roc_auc_score(y_test,y_pred)
+}
+ConfusionMatrixDisplay(
+    confusion_matrix(
+        y_pred=y_pred,y_true=y_test
+    )
+).plot()
+plt.title("Confusion Matrix - Bernoulli Naive Bayes for Credit Cards")
+plt.tight_layout()
+plt.show()
+```
+```{python}
+#| eval: true
+#| echo: false
+results.style.hide(axis='index')
+```
+
+The oversampling reveals that the model still performs decently well overall with a larger base of records. Of interest and note to the company is the higher prevalence of false positives over false negatives.  The model would recommend more often credit cards for people who don't need them, and would less often make a false prediction that they don't need a credit card when they actually do.
+
+The model performance metrics decreased with this oversampling, but remained relatively high in the areas where the company is likely to care.  Retaining high accuracy means we'll often make the right recommendation to the right customer.  The high recall means we may recommend credit cards to customers that don't need them.  
+
+This points to a need for a greater amount of data to better assess customer purchases.  It also points to the method used to add the labels to orders for whether or not a customer needed a credit card; the need for a credit card was based upon *customer* information, whereas the model has been built from *order* data.  Of the two, a larger representative sample of customer and order information is preferrable.
+
+This method is still relatively effective.  Ideally, I think it would be more impactful to decrease false negatives and increase false positives (i.e. recommend credit cards to customers that don't necessarily need them).  This shift may increase our chances of getting more customers to get credit cards whether they need them or not, and also avoid falsely predicting that a customer that needs a credit card doesn't need one.
+
+I'll do a quick imbalance on the classification weighting to adjust this.
+
+```{python}
+bnb = BernoulliNB(class_prior=(.55,.45))
+bnb.fit(X_train,y_train)
+y_pred = bnb.predict(X_test)
+
+results = pd.DataFrame({
+    'Model':[],
+    'Data':[],
+    'Accuracy':[],
+    'Precision':[],
+    'Recall':[],
+    'F1':[],
+    'ROC-AUC':[]
+})
+results.loc[len(results)] = {
+    'Model':'BernoulliNB (Class Priors 0.6 / 0.4)',
+    'Data':'Oversampled',
+    'Accuracy':accuracy_score(y_test,y_pred),
+    'Precision':precision_score(y_test,y_pred),
+    'Recall':recall_score(y_test,y_pred),
+    'F1':f1_score(y_test,y_pred),
+    'ROC-AUC':roc_auc_score(y_test,y_pred)
+}
+
+ConfusionMatrixDisplay(
+    confusion_matrix(
+        y_pred=y_pred,y_true=y_test
+    )
+).plot()
+plt.title("Confusion Matrix - Bernoulli Naive Bayes for Credit Cards\nOversampled Data; Class Priors Adjusted (1)")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| eval: true
+#| echo: false
+results.style.hide(axis='index')
+```
+
+Of the two models, the first may be more ideal for the company (with no adjustment to prior class probabilities).  This adjustment had a better balanced recall vs. precision; while not always making correct predictions, it also does not go in the direction of overrecommendation, or potentially annoying customers with credit card advertisements when they are just routine purchasers for small groups of items and may not need a credit card. Limiting the advertisements to mostly those who need the credit card, along side some who do not, is likely in greater interest to the company.  The first oversampling model also has a higher accuracy than the model with adjusted class prior probabilities.
+
+Having additional customer data beyond past orders and average order amounts may be beneficial.  This modeling is also based upon a limited number of records and product types.  Having a larger sample of customer information, data on who actually gets a credit card from our company, and some other pertinent items could make for more effective models and boost company profits.
+
+Overall - this method can certainly be used to perform further work and make recommendations to customers who may need credit cards.
+
+## Purchase Recommendations
+
+To evaluate recommendations for combined purchases, performing association rule mining may be best.  This can tell us how likely certain items will be purchased together, based upon historical transaction data.
+
+```{r}
+#| output: false
+#| warning: false
+library(tidyverse)
+library(arules)
+library(arulesViz)
+
+
+data <- read.transactions(
+    'C:/Users/pconn/OneDrive/Desktop/transaction_data.csv',
+    sep=',',
+    rm.duplicates=TRUE,
+    format='single',
+    cols=c(1,2)
+)
+```
+
+```{r}
+inspect(data)
+```
+
+```{r}
+a_rules <- arules::apriori(
+    data,
+    control=list(verbose=F),
+    parameter=list(support=0.07,confidence=0.07,minlen=2)
+)
+
+arules::inspect(a_rules)
+```
+
+```{r}
+sorted_arules <- sort(a_rules,by='lift',decreasing = T)
+# arules::inspect(sorted_arules[1:25])
+sub <- head(sort(a_rules,by='lift',decreasing = T),15)
+plot(sub,method="graph",engine="html")
+```
+
+Examining the above list/table, along side the visual graph - it seems like there a good number of associated products with relatively high lift.  This means that the association is stronger and more useful to us - having a customer place one of the items on the left hand side (lhs) greatly increases the likelihood that they'll also place the item(s) on the right hand side(rhs) into their basket as well.  The support (relative frequency) for this generated association list was set to 7%, meaning that the combination of items had to occur in at least 7% of transactions.  The same setting was used for confidence, a relative measure of how frequently the combination occurs together vs. the individual items themselves across the transaction list.
+
+It looks like summer may be coming a bit early!  Customers are stocking up on some summer necessitites - clothing like shorts, tshirts, sandals, socks, and athletic shoes all seem to be going together.  Some customers are also getting potato chips and drink mix - so going outside and enjoying oneself is in.
+
+Shorts seem to be at the center of a lot of combined purchases.  Any time someone looks into shorts, we should probably recommend that they look at socks and athletic shoes (or t-shirts and sandals).  The converse is true for that, too - if someone's looking at sandals, we might recommend tshirts and shorts.  We may also recommend shorts and socks if they're looking into athletic shoes.
+
+Really a no-brainer, but there are some purchases of laptops going on right now, and they have a strong connection to computer mouses.  We should continue to recommend peripherals to users that are browsing for laptops.
+
+Overall - by examining what customers are purchasing, and having more information on them, we should be able to take, apply, expand, and improve these methods so that predictive models can give us better results - more purchases of related items, and more customers with credit cards from our company.
